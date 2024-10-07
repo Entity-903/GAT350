@@ -60,6 +60,44 @@ void Framebuffer::DrawTriangle(int x1, int x2, int x3, int y1, int y2, int y3, c
 	DrawLine(x3, y3, x1, y1, color);
 }
 
+void Framebuffer::DrawCircle(int xc, int yc, int radius, const color_t& color)
+{
+	int x = 0;
+	int y = radius;
+	int d = 3 - 2 * radius;
+	DrawArc(xc, yc, x, y, color);
+	while (y >= x)
+	{
+		// Check for decision parameter
+		// Update d, y as needed
+		if (d > 0)
+		{
+			y--;
+			d = d + 4 * (x - y) + 10;
+		}
+		else
+		{
+			d = d + 4 * x + 6;
+		}
+		// Increment x after updating decision parameter
+		x++;
+
+		// Draw the circle using the new coords
+		DrawArc(xc, yc, x, y, color);
+	}
+}
+
+void Framebuffer::DrawArc(int xc, int yc, int x, int y, const color_t& color) {
+	DrawPoint(xc + x, yc + y, color);
+	DrawPoint(xc - x, yc + y, color);
+	DrawPoint(xc + x, yc - y, color);
+	DrawPoint(xc - x, yc - y, color);
+	DrawPoint(xc + y, yc + x, color);
+	DrawPoint(xc - y, yc + x, color);
+	DrawPoint(xc + y, yc - x, color);
+	DrawPoint(xc - y, yc - x, color);
+}
+
 void Framebuffer::DrawLineSlope(int x1, int y1, int x2, int y2, const color_t& color)
 {
 	int dy = y2 - y1; // Rise
