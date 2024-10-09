@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Renderer.h"
 #include "Framebuffer.h"
+//#include "Image.h"
+#include "PostProcess.h"
 
 int main(int argc, char* argv[])
 {
@@ -55,6 +57,13 @@ int main(int argc, char* argv[])
         framebuffer.DrawTriangle(50, 50, 200, 200, 50, 200, { 0, 255, 255, 0 });
 
         framebuffer.DrawCircle(300, 300, 50, { 0, 255, 255, 0 });
+
+        int mx, my;
+        SDL_GetMouseState(&mx, &my);
+
+        framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 255, 0, 255});
+        framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255, 255, 0, 255 });
+        framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 });
 
         framebuffer.Update();
 

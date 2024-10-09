@@ -65,7 +65,7 @@ void Framebuffer::DrawCircle(int xc, int yc, int radius, const color_t& color)
 	int x = 0;
 	int y = radius;
 	int d = 3 - 2 * radius;
-	DrawArc(xc, yc, x, y, color);
+	DrawOctants(xc, yc, x, y, color);
 	while (y >= x)
 	{
 		// Check for decision parameter
@@ -83,11 +83,11 @@ void Framebuffer::DrawCircle(int xc, int yc, int radius, const color_t& color)
 		x++;
 
 		// Draw the circle using the new coords
-		DrawArc(xc, yc, x, y, color);
+		DrawOctants(xc, yc, x, y, color);
 	}
 }
 
-void Framebuffer::DrawArc(int xc, int yc, int x, int y, const color_t& color) {
+void Framebuffer::DrawOctants(int xc, int yc, int x, int y, const color_t& color) {
 	DrawPoint(xc + x, yc + y, color);
 	DrawPoint(xc - x, yc + y, color);
 	DrawPoint(xc + x, yc - y, color);
@@ -171,6 +171,81 @@ void Framebuffer::DrawLine(int x1, int y1, int x2, int y2, const color_t& color)
 			error += dx;
 		}
 	}
-}	
+}
+
+void Framebuffer::DrawLinearCurve(int x1, int y1, int x2, int y2, const color_t& color)
+{
+	float dt = 1 / 10.0f;
+	for (int i = 0; i < 10; i++)
+	{
+		float t1 = i * dt;
+		int sx1 = Lerp(x1, x2, t1);
+		int sy1 = Lerp(y1, y2, t1);
+
+		float t2 = t1 * dt;
+
+		int sx2 = Lerp(x1, x2, t2);
+		int sy2 = Lerp(y1, y2, t2);
+
+		t1 += dt;
+
+		DrawLine(sx1, sy1, sx2, sy2, color);
+	}
+}
+
+void Framebuffer::DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int y3, const color_t& color)
+{
+	float dt = 1 / 10.0f;
+	float t1 = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		int sx1, sy1;
+		QuadraticPoint(x1, y1, x2, y2, x3, y3, t1, sx1, sy1);
+
+		float t2 = t1 + dt;
+		int sx2, sy2;
+		QuadraticPoint(x1, y1, x2, y2, x3, y3, t2, sx2, sy2);
+
+		//float one_minus_t1 = 1 - t1;
+		//
+		//float a1 = one_minus_t1 * one_minus_t1; // std::pow
+		//float b1 = 2 * one_minus_t1 * t1;
+		//float c1 = t1 * t1;
+		//
+		//int sx1 = (int)(a1 * x1 + b1 * x2 + c1 * x3);
+		//int sy1 = (int)(a1 * y1 + b1 * y2 + c1 * y3);
+		//
+		//float t2 = t1 * dt;
+		//
+		//int sx2 = Lerp(x1, x2, t2);
+		//int sy2 = Lerp(y1, y2, t2);
+		//
+		//
+		t1 += dt;
+
+		DrawLine(sx1, sy1, sx2, sy2, color);
+	}
+}
+
+void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, const color_t& color)
+{
+	// Unfinished
+}
+
+void Framebuffer::DrawImage(int x, int y, const Image& image)
+{
+	// Check if offscreen
+
+	// Iterate through image y
+
+		// Set screen y (image y + y)
+
+		// Check if off-screen, don't draw if off-screen
+
+		// Iterate through image x
+
+			// Set screen x (image x + x)
+}
+
 
 
