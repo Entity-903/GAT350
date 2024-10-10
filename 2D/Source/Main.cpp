@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         int y2 = rand() % framebuffer.m_height;
         //int y3 = rand() % framebuffer.m_height;
         
-        framebuffer.DrawLine(x1, y1, x2, y2, { 0, 255, 255, 0 });
+        //framebuffer.DrawLine(x1, y1, x2, y2, { 0, 255, 255, 0 });
         //framebuffer.DrawRect(100, 100, 250, 250, { 0, 255, 255, 0 });
         //framebuffer.DrawRect(200, 200, 250, 250, { 0, 255, 255, 0 });
         //framebuffer.DrawRect(300, 300, 250, 250, { 0, 255, 255, 0 });
@@ -63,13 +63,14 @@ int main(int argc, char* argv[])
 
         framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 255, 0, 255});
         framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255, 255, 0, 255 });
-        framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 });
+        framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 }); // I believe this function is incomplete
 
         framebuffer.Update();
 
         renderer.CopyFrameBuffer(framebuffer);
 
         // Show screen
+        // renderer = framebuffer;
         SDL_RenderPresent(renderer.m_renderer);
     }
 
