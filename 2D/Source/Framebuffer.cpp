@@ -235,8 +235,8 @@ void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3,
 
 void Framebuffer::DrawImage(int x, int y, const Image& image)
 {
-	// Check if offscreen
-	//if (<look at DrawRect for example, use image width and height>) return;
+	// Check if entire image is offscreen
+	if (x + m_width <= 0 || x >= m_width || y + m_height <= 0 || y >= m_height) return;
 	
 	// Iterate through image y
 	for (int iy = 0; iy < image.m_height; iy++)
@@ -245,7 +245,7 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 		int sy = y + iy;
 
 		// Check if off-screen, don't draw if off-screen
-		if (sy < 0 || sy > m_height) return;
+		if (sy <= 0 || sy >= m_height) continue;
 
 		// Iterate through image x
 		for (int ix = 0; ix < image.m_width; ix++)
@@ -254,13 +254,13 @@ void Framebuffer::DrawImage(int x, int y, const Image& image)
 			int sx = x + ix;
 
 			// Check if off-screen, don't draw if off-screen
-			if (sx < 0 || sx > m_width) return;
+			if (sx <= 0 || sx >= m_width) continue;
 
 			// Get image pixel color
 			color_t color = image.m_buffer[ix + iy * image.m_width];
 
 			// Check alpha, if 0 don't draw
-			if (color.a == 0) return;
+			if (color.a == 0) continue;
 
 			// Set buffer to color
 			DrawPoint(sx, sy, color);

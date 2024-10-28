@@ -66,9 +66,12 @@ int main(int argc, char* argv[])
         //framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 });
 
         Image image;
+        Image image2;
         image.Load("Scenic.jpg");
-
         framebuffer.DrawImage(100, 100, image);
+        image2.Load("GenericScene.jpg");
+        framebuffer.DrawImage(200, 200, image2);
+
 
         framebuffer.Update();
 
