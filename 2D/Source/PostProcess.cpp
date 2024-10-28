@@ -213,12 +213,12 @@ void PostProcess::Edge(std::vector<color_t>& buffer, int width, int height, int 
 			}
 		}
 
-		int m = std::sqrt(h * h + v * v);
+		int m = static_cast<int>(std::sqrt(h * h + v * v));
 		m = (m >= threshhold) ? m : 0;
 
 		uint8_t c = Clamp(m, 0, 255);
-
 		color_t color = buffer[i];
+
 		color.r = c;
 		color.g = c;
 		color.b = c;

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Renderer.h"
 #include "Framebuffer.h"
-//#include "Image.h"
+#include "Image.h"
 #include "PostProcess.h"
 
 int main(int argc, char* argv[])
@@ -42,11 +42,11 @@ int main(int argc, char* argv[])
             framebuffer.DrawPoint(x, y, { 255, 255, 255, 255 });
         }
 
-        int x1 = rand() % framebuffer.m_width;
-        int x2 = rand() % framebuffer.m_width;
+        //int x1 = rand() % framebuffer.m_width;
+        //int x2 = rand() % framebuffer.m_width;
         //int x3 = rand() % framebuffer.m_width;
-        int y1 = rand() % framebuffer.m_height;
-        int y2 = rand() % framebuffer.m_height;
+        //int y1 = rand() % framebuffer.m_height;
+        //int y2 = rand() % framebuffer.m_height;
         //int y3 = rand() % framebuffer.m_height;
         
         //framebuffer.DrawLine(x1, y1, x2, y2, { 0, 255, 255, 0 });
@@ -54,16 +54,21 @@ int main(int argc, char* argv[])
         //framebuffer.DrawRect(200, 200, 250, 250, { 0, 255, 255, 0 });
         //framebuffer.DrawRect(300, 300, 250, 250, { 0, 255, 255, 0 });
         
-        framebuffer.DrawTriangle(50, 50, 200, 200, 50, 200, { 0, 255, 255, 0 });
+        //framebuffer.DrawTriangle(50, 50, 200, 200, 50, 200, { 0, 255, 255, 0 });
 
-        framebuffer.DrawCircle(300, 300, 50, { 0, 255, 255, 0 });
+        //framebuffer.DrawCircle(300, 300, 50, { 0, 255, 255, 0 });
 
         int mx, my;
         SDL_GetMouseState(&mx, &my);
 
-        framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 255, 0, 255});
-        framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255, 255, 0, 255 });
-        framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 }); // I believe this function is incomplete
+        //framebuffer.DrawLinearCurve(100, 100, 200, 200, { 255, 255, 0, 255});
+        //framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255, 255, 0, 255 });
+        //framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 });
+
+        Image image;
+        image.Load("Scenic.jpg");
+
+        framebuffer.DrawImage(100, 100, image);
 
         framebuffer.Update();
 

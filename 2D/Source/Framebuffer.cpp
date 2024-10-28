@@ -1,6 +1,7 @@
 #include "Framebuffer.h"
 #include "Renderer.h"
 #include <iostream>
+#include "Image.h"
 
 Framebuffer::Framebuffer(const Renderer& renderer, int width, int height)
 {
@@ -206,21 +207,6 @@ void Framebuffer::DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int
 		int sx2, sy2;
 		QuadraticPoint(x1, y1, x2, y2, x3, y3, t2, sx2, sy2);
 
-		//float one_minus_t1 = 1 - t1;
-		//
-		//float a1 = one_minus_t1 * one_minus_t1; // std::pow
-		//float b1 = 2 * one_minus_t1 * t1;
-		//float c1 = t1 * t1;
-		//
-		//int sx1 = (int)(a1 * x1 + b1 * x2 + c1 * x3);
-		//int sy1 = (int)(a1 * y1 + b1 * y2 + c1 * y3);
-		//
-		//float t2 = t1 * dt;
-		//
-		//int sx2 = Lerp(x1, x2, t2);
-		//int sy2 = Lerp(y1, y2, t2);
-		//
-		//
 		t1 += dt;
 
 		DrawLine(sx1, sy1, sx2, sy2, color);
@@ -230,21 +216,56 @@ void Framebuffer::DrawQuadraticCurve(int x1, int y1, int x2, int y2, int x3, int
 void Framebuffer::DrawCubicCurve(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4, const color_t& color)
 {
 	// Unfinished
+	float dt = 1 / 10.0f;
+	float t1 = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		int sx1, sy1;
+		CubicPoint(x1, y1, x2, y2, x3, y3, x4, y4, t1, sx1, sy1);
+
+		float t2 = t1 + dt;
+		int sx2, sy2;
+		CubicPoint(x1, y1, x2, y2, x3, y3, x4, y4, t2, sx2, sy2);
+
+		t1 += dt;
+
+		DrawLine(sx1, sy1, sx2, sy2, color);
+	}
 }
 
 void Framebuffer::DrawImage(int x, int y, const Image& image)
 {
 	// Check if offscreen
-
+	//if (<look at DrawRect for example, use image width and height>) return;
+	
 	// Iterate through image y
-
+	for (int iy = 0; iy < image.m_height; iy++)
+	{
 		// Set screen y (image y + y)
+		int sy = y + iy;
 
 		// Check if off-screen, don't draw if off-screen
+		if (sy < 0 || sy > m_height) return;
 
 		// Iterate through image x
-
+		for (int ix = 0; ix < image.m_width; ix++)
+		{
 			// Set screen x (image x + x)
+			int sx = x + ix;
+
+			// Check if off-screen, don't draw if off-screen
+			if (sx < 0 || sx > m_width) return;
+
+			// Get image pixel color
+			color_t color = image.m_buffer[ix + iy * image.m_width];
+
+			// Check alpha, if 0 don't draw
+			if (color.a == 0) return;
+
+			// Set buffer to color
+			DrawPoint(sx, sy, color);
+		}
+	}
 }
 
 

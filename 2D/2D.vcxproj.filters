@@ -24,10 +24,10 @@
     <ClCompile Include="Source\Framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Image.cpp">
+    <ClCompile Include="Source\PostProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PostProcess.cpp">
+    <ClCompile Include="Source\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <ClInclude Include="Source\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Image.h">
+    <ClInclude Include="Source\PostProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PostProcess.h">
+    <ClInclude Include="Source\Image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
