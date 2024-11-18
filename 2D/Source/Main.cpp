@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
     Framebuffer framebuffer(renderer, 800, 600);
 
     bool quit = false;
+    Image image;
     while (!quit)
     {
         SDL_Event event;
@@ -65,12 +66,22 @@ int main(int argc, char* argv[])
         //framebuffer.DrawQuadraticCurve(100, 200, mx, my, 300, 200, { 255, 255, 0, 255 });
         //framebuffer.DrawCubicCurve(300, 400, 300, 100, mx, my, 600, 400, { 255, 255, 0, 255 });
 
-        Image image;
-        Image image2;
-        image.Load("Scenic.jpg");
+        
+        image.Load("GenericScene.jpg");
         framebuffer.DrawImage(100, 100, image);
-        image2.Load("GenericScene.jpg");
-        framebuffer.DrawImage(200, 200, image2);
+        //PostProcess::Invert(framebuffer.m_buffer);
+        //PostProcess::Monochrome(framebuffer.m_buffer);
+        //PostProcess::ColorBalance(framebuffer.m_buffer, 155, -50, -50);
+        //PostProcess::Brightness(framebuffer.m_buffer, 100);
+        //PostProcess::Noise(framebuffer.m_buffer, 80);
+        //PostProcess::Threshold(framebuffer.m_buffer, 150);
+        //PostProcess::Posterize(framebuffer.m_buffer, 6);
+        
+        //PostProcess::BoxBlur(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::GaussianBlur(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::Sharpen(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
+        //PostProcess::Edge(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height, 100);
+        PostProcess::Emboss(framebuffer.m_buffer, framebuffer.m_width, framebuffer.m_height);
 
 
         framebuffer.Update();

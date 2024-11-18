@@ -12,6 +12,12 @@ inline T Clamp(const T& value, const T& min, const T& max)
 	return (value < min) ? min : (value > max) ? max : value;
 }
 
+//template<typename T>
+//inline T Clamp(const T& value, int min, int max)
+//{
+//	return (value < min) ? min : (value > max) ? max : value;
+//}
+
 inline void QuadraticPoint(int x1, int y1, int x2, int y2, int x3, int y3, float t, int& x, int& y)
 {
 	float one_minus_t = 1 - t;

@@ -29,7 +29,7 @@ public:
 	void DrawImage(int x, int y, const class Image& image);
 	//void DrawImage(int x, int y, const Image& image);
 
-	std::vector<color_t>& Buffer() { return m_buffer; }
+	//std::vector<color_t>& Buffer() { return m_buffer; }
 
 
 public:

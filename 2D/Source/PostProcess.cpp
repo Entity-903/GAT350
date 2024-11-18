@@ -34,6 +34,54 @@ void PostProcess::Brightness(std::vector<color_t>& buffer, int brightness)
 		});
 }
 
+void PostProcess::Noise(std::vector<color_t>& buffer, uint8_t noise)
+{
+	std::for_each(buffer.begin(), buffer.end(), [noise](auto& color)
+		{
+			int offset = (rand() % ((noise * 2) + 1)) - noise;
+			color.r = static_cast<uint8_t>(Clamp(color.r + offset, 0, 255));
+			color.g = static_cast<uint8_t>(Clamp(color.g + offset, 0, 255));
+			color.b = static_cast<uint8_t>(Clamp(color.b + offset, 0, 255));
+		});
+}
+
+void PostProcess::Threshold(std::vector<color_t>& buffer, uint8_t threshold)
+{
+	std::for_each(buffer.begin(), buffer.end(), [threshold](auto& color)
+		{
+			if (color.r > threshold && color.g > threshold && color.b > threshold)
+			{
+				color = {255, 255, 255, 255};
+			}
+			else
+			{
+				color = { 0, 0, 0, 255 };
+			}
+		});
+}
+
+void PostProcess::Posterize(std::vector<color_t>& buffer, uint8_t levels)
+{
+	uint8_t level = 255 / levels;
+
+	std::for_each(buffer.begin(), buffer.end(), [level](auto& color)
+		{
+			color.r = color.r / level * level;
+			color.g = color.g / level * level;
+			color.b = color.b / level * level;
+		});
+}
+
+void PostProcess::ColorBalance(std::vector<color_t>& buffer, int ro, int go, int bo)
+{
+	std::for_each(buffer.begin(), buffer.end(), [ro, go, bo](auto& color)
+		{
+			color.r = static_cast<uint8_t>(Clamp(color.r + ro, 0, 255));
+			color.g = static_cast<uint8_t>(Clamp(color.g + go, 0, 255));
+			color.b = static_cast<uint8_t>(Clamp(color.b + bo, 0, 255));
+		});
+}
+
 void PostProcess::BoxBlur(std::vector<color_t>& buffer, int width, int height)
 {
 	std::vector<color_t> source = buffer;
@@ -52,7 +100,7 @@ void PostProcess::BoxBlur(std::vector<color_t>& buffer, int width, int height)
 		int y = i / width;
 
 		// skip if out of range
-		if (x < 1 || x + 1 >= width || y < 1 || x + 1 >= height) continue;
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
 
 		int r = 0;
 		int g = 0;
@@ -71,7 +119,7 @@ void PostProcess::BoxBlur(std::vector<color_t>& buffer, int width, int height)
 			}
 		}
 
-		color_t color = buffer[i];
+		color_t& color = buffer[i];
 		color.r = static_cast<uint8_t>(r / 9);
 		color.g = static_cast<uint8_t>(g / 9);
 		color.b = static_cast<uint8_t>(b / 9);
@@ -97,7 +145,7 @@ void PostProcess::GaussianBlur(std::vector<color_t>& buffer, int width, int heig
 		int y = i / width;
 
 		// skip if out of range
-		if (x < 1 || x + 1 >= width || y < 1 || x + 1 >= height) continue;
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
 
 		int r = 0;
 		int g = 0;
@@ -116,10 +164,10 @@ void PostProcess::GaussianBlur(std::vector<color_t>& buffer, int width, int heig
 			}
 		}
 
-		color_t color = buffer[i];
-		color.r = static_cast<uint8_t>(r / 9);
-		color.g = static_cast<uint8_t>(g / 9);
-		color.b = static_cast<uint8_t>(b / 9);
+		color_t& color = buffer[i];
+		color.r = static_cast<uint8_t>(r / 16);
+		color.g = static_cast<uint8_t>(g / 16);
+		color.b = static_cast<uint8_t>(b / 16);
 	}
 }
 
@@ -141,7 +189,7 @@ void PostProcess::Sharpen(std::vector<color_t>& buffer, int width, int height)
 		int y = i / width;
 
 		// skip if out of range
-		if (x < 1 || x + 1 >= width || y < 1 || x + 1 >= height) continue;
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
 
 		int r = 0;
 		int g = 0;
@@ -161,16 +209,14 @@ void PostProcess::Sharpen(std::vector<color_t>& buffer, int width, int height)
 		}
 
 		color_t color = buffer[i];
-		color.r = static_cast<uint8_t>(r / 9); // Clamp{r, 0, 255)
-		color.g = static_cast<uint8_t>(g / 9);
-		color.b = static_cast<uint8_t>(b / 9);
 
-		//color.r = static_cast<uint8_t>(Clamp{r, 0, 255);
-		//color.g = static_cast<uint8_t>(Clamp{g, 0, 255);
-		//color.b = static_cast<uint8_t>(Clamp{b, 0, 255);
+		color.r = static_cast<uint8_t>(Clamp( r, 0, 255 ));
+		color.g = static_cast<uint8_t>(Clamp( g, 0, 255 ));
+		color.b = static_cast<uint8_t>(Clamp( b, 0, 255 ));
 	}
 }
 
+// Threshold is 0 -  (uint8_t)
 void PostProcess::Edge(std::vector<color_t>& buffer, int width, int height, int threshhold)
 {
 	std::vector<color_t> source = buffer;
@@ -196,7 +242,7 @@ void PostProcess::Edge(std::vector<color_t>& buffer, int width, int height, int 
 		int y = i / width;
 
 		// skip if out of range
-		if (x < 1 || x + 1 >= width || y < 1 || x + 1 >= height) continue;
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
 
 		int h = 0;
 		int v = 0;
@@ -213,17 +259,60 @@ void PostProcess::Edge(std::vector<color_t>& buffer, int width, int height, int 
 			}
 		}
 
-		int m = static_cast<int>(std::sqrt(h * h + v * v));
+		uint16_t m = (uint16_t)(std::sqrt(h * h + v * v));
 		m = (m >= threshhold) ? m : 0;
 
-		uint8_t c = Clamp(m, 0, 255);
-		color_t color = buffer[i];
+		uint8_t c = Clamp((int)m, 0, 255);
+		color_t& color = buffer[i];
 
 		color.r = c;
 		color.g = c;
 		color.b = c;
-		//color.r = static_cast<uint8_t>(Clamp{r, 0, 255);
-		//color.g = static_cast<uint8_t>(Clamp{g, 0, 255);
-		//color.b = static_cast<uint8_t>(Clamp{b, 0, 255);
+	}
+}
+
+void PostProcess::Emboss(std::vector<color_t>& buffer, int width, int height)
+{
+	std::vector<color_t> source = buffer;
+	int k[3][3] =
+	{
+		{ -2, -1,  0 },
+		{ -1,  1,  1 },
+		{  0,  1,  2 } 
+	};
+
+	for (int i = 0; i < buffer.size(); i++)
+	{
+		// % 5 : 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+		//       1, 2, 3, 4, 0, 1, 2, 3, 4, 0
+		int x = i % width;
+		int y = i / width;
+
+		// skip if out of range
+		if (x < 1 || x + 1 >= width || y < 1 || y + 1 >= height) continue;
+
+		int h = 0;
+		int v = 0;
+
+		for (int iy = 0; iy < 3; iy++)
+		{
+			for (int ix = 0; ix < 3; ix++)
+			{
+				color_t pixel = source[(x + ix - 1) + (y + iy - 1) * width];
+				int weight = k[iy][ix];
+
+				h += pixel.r * weight;
+				v += pixel.g * weight;
+			}
+		}
+
+		uint16_t m = (uint16_t)(std::sqrt(h * h + v * v));
+		
+		uint8_t c = Clamp((int)m, 0, 255);
+		color_t& color = buffer[i];
+
+		color.r = c;
+		color.g = c;
+		color.b = c;
 	}
 }
